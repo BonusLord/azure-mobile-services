@@ -33,10 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.protocol.HTTP;
 
 import android.accounts.Account;
@@ -747,25 +744,8 @@ public class MobileServiceClient {
 			}
 		}
 		
-		ServiceFilterRequest request;
 		String url = uriBuilder.build().toString();
-		
-		if (httpMethod.equalsIgnoreCase(HttpGet.METHOD_NAME)) {
-			request = new ServiceFilterRequestImpl(new HttpGet(url), getAndroidHttpClientFactory());
-		} else if (httpMethod.equalsIgnoreCase(HttpPost.METHOD_NAME)) {
-			request = new ServiceFilterRequestImpl(new HttpPost(url), getAndroidHttpClientFactory());
-		} else if (httpMethod.equalsIgnoreCase(HttpPut.METHOD_NAME)) {
-			request = new ServiceFilterRequestImpl(new HttpPut(url), getAndroidHttpClientFactory());
-		} else if (httpMethod.equalsIgnoreCase(HttpPatch.METHOD_NAME)) {
-			request = new ServiceFilterRequestImpl(new HttpPatch(url), getAndroidHttpClientFactory());
-		} else if (httpMethod.equalsIgnoreCase(HttpDelete.METHOD_NAME)) {
-			request = new ServiceFilterRequestImpl(new HttpDelete(url), getAndroidHttpClientFactory());
-		} else {
-			if (callback != null) {
-				callback.onResponse(null, new IllegalArgumentException("httpMethod not supported"));
-			}
-			return;
-		}
+		ServiceFilterRequest request = new ServiceFilterRequestImpl(new HttpGeneralEntityEnclosingRequest(httpMethod, url), getAndroidHttpClientFactory());
 		
 		if (requestHeaders != null && requestHeaders.size() > 0) {
 			for (Pair<String, String> header: requestHeaders) {
